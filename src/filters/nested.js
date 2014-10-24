@@ -77,7 +77,12 @@ var collectChildrenPatchFilter = function collectChildrenPatchFilter(context) {
   for (var index = 0; index < length; index++) {
     child = context.children[index];
     if (context.left[child.childName] !== child.result) {
-      context.left[child.childName] = child.result;
+      if (child.result === undefined) {
+        delete context.left[child.childName];
+      }
+      else {
+        context.left[child.childName] = child.result;
+      }
     }
   }
   context.setResult(context.left).exit();
