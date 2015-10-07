@@ -5,12 +5,27 @@ var HtmlFormatter = function HtmlFormatter() {};
 
 HtmlFormatter.prototype = new BaseFormatter();
 
+function htmlEscape(text) {
+  var html = text;
+  var replacements = [
+    [/&/g, '&amp;'],
+    [/</g, '&lt;'],
+    [/>/g, '&gt;'],
+    [/'/g, '&apos;'],
+    [/"/g, '&quot;']
+  ];
+  for (var i = 0; i < replacements.length; i++) {
+    html = html.replace(replacements[i][0], replacements[i][1]);
+  }
+  return html;
+}
+
 HtmlFormatter.prototype.typeFormattterErrorFormatter = function(context, err) {
   context.out('<pre class="jsondiffpatch-error">' + err + '</pre>');
 };
 
 HtmlFormatter.prototype.formatValue = function(context, value) {
-  context.out('<pre>' + JSON.stringify(value, null, 2) + '</pre>');
+  context.out('<pre>' + htmlEscape(JSON.stringify(value, null, 2)) + '</pre>');
 };
 
 HtmlFormatter.prototype.formatTextDiffString = function(context, value) {
@@ -30,9 +45,10 @@ HtmlFormatter.prototype.formatTextDiffString = function(context, value) {
       '<div class="jsondiffpatch-textdiff-line">');
     var pieces = line.pieces;
     for (var pieceIndex = 0, piecesLength = pieces.length; pieceIndex < piecesLength; pieceIndex++) {
+      /* global unescape */
       var piece = pieces[pieceIndex];
       context.out('<span class="jsondiffpatch-textdiff-' + piece.type + '">' +
-        piece.text + '</span>');
+        htmlEscape(unescape(piece.text)) + '</span>');
     }
     context.out('</div></li>');
   }

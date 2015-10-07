@@ -132,8 +132,17 @@
 
   /* global jsondiffpatch */
   var instance = jsondiffpatch.create({
-    objectHash: function(obj) {
-      return obj._id || obj.id || obj.name || JSON.stringify(obj);
+    objectHash: function(obj, index) {
+      if (typeof obj._id !== 'undefined') {
+        return obj._id;
+      }
+      if (typeof obj.id !== 'undefined') {
+        return obj.id;
+      }
+      if (typeof obj.name !== 'undefined') {
+        return obj.name;
+      }
+      return '$$index:' + index;
     }
   });
 
@@ -423,7 +432,9 @@
     jsondiffpatch.formatters.html.showUnchanged(document.getElementById('showunchanged').checked, null, 800);
   });
 
-  dom.ready(setTimeout(compare));
+  dom.ready(function(){
+    setTimeout(compare);
+  }, 1);
 
   var load = {};
 

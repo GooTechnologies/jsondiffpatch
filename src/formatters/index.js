@@ -1,8 +1,10 @@
+var environment = require('../environment');
 
+exports.base = require('./base');
 exports.html = require('./html');
 exports.annotated = require('./annotated');
 
-if (!process.browser) {
-	var consoleModuleName = './console';
-	exports.console = require(consoleModuleName);
+if (!environment.isBrowser) {
+  var consoleModuleName = './console';
+  exports.console = require(consoleModuleName);
 }
